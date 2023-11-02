@@ -1,5 +1,0 @@
-![image](./image/transcation.png)
-![image](./image/profileManagement1.png)
-![image](./image/profileManagement2.png)
-![image](./image/mainPage.png)
-![image](./image/authentication.png)
