@@ -3,7 +3,7 @@ from fastapi import APIRouter, Depends, HTTPException
 from fastapi.security import OAuth2PasswordRequestForm, OAuth2PasswordBearer
 from pydantic import BaseModel, EmailStr
 from starlette import status
-from models.models import Users
+from modules.user import User
 from passlib.context import CryptContext
 from db.database import Session
 from typing import Annotated, Any, Optional
@@ -25,7 +25,7 @@ router = APIRouter(prefix='/auth', tags=['auth'])
 
 
 def get_db():
-    db = SessionLocal()
+    db = Session()
     try:
         yield db
     finally:
@@ -50,9 +50,9 @@ class Token(BaseModel):
 
 @router.post("/", status_code=status.HTTP_201_CREATED)
 async def create_user(db: db_dependency, create_user_request: CreateUserRequest):
-    existing_user = db.query(Users).filter(
-        (Users.username == create_user_request.username) |
-        (Users.email == create_user_request.email)
+    existing_user = db.query(User).filter(
+        (User.username == create_user_request.username) |
+        (User.email == create_user_request.email)
     ).first()
     if existing_user:
         raise HTTPException(
@@ -60,7 +60,7 @@ async def create_user(db: db_dependency, create_user_request: CreateUserRequest)
             detail="Username or email already registered."
         )
 
-    create_user_model = Users(
+    create_user_model = User(
         email=create_user_request.email,
         username=create_user_request.username,
         first_name=create_user_request.first_name,
@@ -94,7 +94,7 @@ async def login_for_access_token(form_data: Annotated[OAuth2PasswordRequestForm,
 
 
 def authenticate_user(username: str, password: str, db: db_dependency) -> Any:
-    user = db.query(Users).filter(Users.username == username).first()
+    user = db.query(User).filter(User.username == username).first()
     if not user or not bcrypt_context.verify(password, user.hashed_password):
         return False
     return user
@@ -108,13 +108,13 @@ def create_access_token(username: str, user_id: int, role: str, expires_delta: t
     return token
 
 
-async def get_current_user(db: Session = Depends(get_db), token: str = Depends(oauth2_bearer)) -> Users:
+async def get_current_user(db: Session = Depends(get_db), token: str = Depends(oauth2_bearer)) -> User:
     try:
         payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
         user_id: int = payload.get('id')
         if user_id is None:
             raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail='Could not validate credentials')
-        user = db.query(Users).filter(Users.id == user_id).first()
+        user = db.query(User).filter(User.id == user_id).first()
         if not user:
             raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail='User not found')
         return user
@@ -123,7 +123,7 @@ async def get_current_user(db: Session = Depends(get_db), token: str = Depends(o
 
 
 @router.patch("/deactivate-my-account", response_model=Token)
-async def deactivate_account(db: db_dependency, current_user: Users = Depends(get_current_user), ):
+async def deactivate_account(db: db_dependency, current_user: User = Depends(get_current_user), ):
     current_user.is_active = False
     db.add(current_user)
     try:
@@ -139,7 +139,7 @@ async def deactivate_account(db: db_dependency, current_user: Users = Depends(ge
 
 @router.post("/change-password", status_code=status.HTTP_200_OK)
 async def change_password(
-        old_password: str, new_password: str, db: db_dependency, current_user: Users = Depends(get_current_user),
+        old_password: str, new_password: str, db: db_dependency, current_user: User = Depends(get_current_user),
 ):
     if not bcrypt_context.verify(old_password, current_user.hashed_password):
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Old password is incorrect.")
