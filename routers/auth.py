@@ -15,7 +15,7 @@ from dotenv import load_dotenv
 load_dotenv()  # take environment variables from .env.
 
 # These are used to create the signature for a JWT
-SECRET_KEY = os.getenv("SECRET_KEY")
+SECRET_KEY = ""#os.getenv("SECRET_KEY")
 ALGORITHM = os.getenv("ALGORITHM")
 
 bcrypt_context = CryptContext(schemes=['bcrypt'], deprecated='auto')
@@ -122,7 +122,20 @@ async def get_current_user(db: Session = Depends(get_db), token: str = Depends(o
         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail='Could not validate credentials')
 
 
-@router.patch("/deactivate-my-account", response_model=Token)
+# @router.post("/deactivate-my-account")
+# async def deactivate_account(db: db_dependency, current_user: Users = Depends(get_current_user), ):
+#     db.delete(current_user)
+#     try:
+#         db.commit()
+#         return {"message": "User account has been deactivated."}
+#     except Exception as e:
+#         db.rollback()
+#         raise HTTPException(
+#             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+#             detail="An error occurred while deactivating the account."
+#         )
+
+@router.post("/deactivate-my-account")
 async def deactivate_account(db: db_dependency, current_user: Users = Depends(get_current_user), ):
     current_user.is_active = False
     db.add(current_user)

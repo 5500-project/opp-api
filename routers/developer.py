@@ -32,5 +32,5 @@ async def read_all(user: user_dependency, db: db_dependency):
 
 
 def check_developer_user_auth(user):
-    if user is None or user.get('user_role').lower() != 'developer':
+    if user is None or user.role.lower() != 'developer':
         raise HTTPException(status_code=401, detail='Authentication Failed')

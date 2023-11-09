@@ -34,5 +34,5 @@ async def get_transaction(user: user_dependency, db: db_dependency):
 # Check whether user has right to access specific transactions
 def check_user_auth(user):
     # TODO: validate user
-    if user is None or user.get('user_role').lower() != '':
+    if user is None or user.role.lower() != '':
         raise HTTPException(status_code=401, detail='Authentication Failed')
