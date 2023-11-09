@@ -95,7 +95,7 @@ async def login_for_access_token(form_data: Annotated[OAuth2PasswordRequestForm,
 
 def authenticate_user(username: str, password: str, db: db_dependency) -> Any:
     user = db.query(Users).filter(Users.username == username).first()
-    if not user or not bcrypt_context.verify(password, user.password_hash):
+    if not user or not user.is_active or not bcrypt_context.verify(password, user.password_hash):
         return False
     return user
 
