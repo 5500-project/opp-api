@@ -138,7 +138,6 @@ async def get_current_user(db: Session = Depends(get_db), token: str = Depends(o
 @router.post("/deactivate-my-account")
 async def deactivate_account(db: db_dependency, current_user: Users = Depends(get_current_user), ):
     current_user.is_active = False
-    db.add(current_user)
     try:
         db.commit()
         return {"message": "User account has been deactivated."}

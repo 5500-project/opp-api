@@ -13,17 +13,12 @@ class Users(Base):
     username = Column(String, unique=True, nullable=False)
     email = Column(String, unique=True, nullable=False)
     phone_number = Column(String)
-    password_hash = Column(String, nullable=False)  # Renamed to indicate it's hashed
+    password_hash = Column(String, nullable=False)
     is_active = Column(Boolean, default= True)
     role = Column(String)
 
 
-    # transactions = relationship('Transaction', back_populates='user')
-    # credit_cards = relationship('CreditCards', back_populates='user')
-    # debit_cards = relationship('DebitCards', back_populates='user')
+    transactions = relationship('Transaction', back_populates='user')
+    credit_cards = relationship('CreditCards', back_populates='user')
+    debit_cards = relationship('DebitCards', back_populates='user')
 
-    def set_password(self, password):
-        self.password_hash = bcrypt.hashpw(password.encode('utf-8'), bcrypt.gensalt())
-
-    def check_password(self, password):
-        return bcrypt.checkpw(password.encode('utf-8'), self.password_hash.encode('utf-8'))
