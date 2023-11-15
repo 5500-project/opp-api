@@ -1,20 +1,20 @@
 import requests
 from db.database import Base
 from sqlalchemy import (
-    Column, Integer, Float, DateTime, Enum, ForeignKey
+    Column, Integer, Float, String, DateTime, Enum, ForeignKey
 )
 from sqlalchemy.orm import relationship
 
 from datetime import datetime, timedelta
-import enum
+from enum import Enum
 
 
-class TransactionStatus(enum.Enum):
-    processed = "processed"
-    in_processing = "in_processing"
+class TransactionStatus(Enum):
+    completed = "completed"
+    in_processing = "pending"
 
 
-class PaymentMethod(enum.Enum):
+class PaymentMethod(Enum):
     debit = "debit"
     credit = "credit"
 
@@ -26,10 +26,12 @@ class Transaction(Base):
     user_id = Column(Integer, ForeignKey('users.id'))
     amount = Column(Float, nullable=False)
     transaction_date = Column(DateTime, default=datetime.utcnow)
-    status = Column(Enum('pending', 'completed', name='transaction_status'), default='completed')
-    payment_method = Column(Enum(PaymentMethod))
+    #status = Column(Enum('pending', 'completed'), default='completed')
+    status = Column(String, default='completed')
+    #payment_method = Column(Enum(PaymentMethod))
+    payment_method = Column(String)
 
-    user = relationship('User', back_populates='transactions')
+    # user = relationship('User', back_populates='transactions')
 
     @classmethod
     def get_pending_transactions(cls, session):
@@ -71,16 +73,18 @@ class Transaction(Base):
     def initiateTransaction(cls, session, user_id, card_number, amount, payment_method):
         # Validate the card
         card_validation = cls.validate_card(card_number)
-        if not card_validation.get("success"):
+        if card_validation.get("success") == "false":
             return {"error": card_validation.get("msg")}
 
         # Check funds and potential fraud
         funds_check = cls.check_funds_and_fraud(card_number, amount)
-        if not funds_check.get("success"):
+        print(funds_check)
+        if funds_check.get("success")=='false':
             return {"error": funds_check.get("msg")}
 
 
-        initial_status = "completed" if payment_method == PaymentMethod.debit else "in_processing"
+        # initial_status = "completed" if payment_method == PaymentMethod.debit else "pending"
+        initial_status = "completed" if payment_method == "debit" else "pending"
 
         # All checks passed, create the transaction
         new_transaction = cls(
@@ -99,12 +103,15 @@ class Transaction(Base):
     def update_credit_card_transactions(cls, session):
         two_days_ago = datetime.utcnow() - timedelta(days=2)
         transactions_to_update = session.query(cls).filter(
-            cls.payment_method == PaymentMethod.credit,
-            cls.status == "in_processing",
-            cls.transaction_date <= two_days_ago
+            cls.payment_method == "credit", # PaymentMethod.credit,
+            cls.status == "pending",
+            cls.transaction_date <= datetime.utcnow() # two_days_ago
         ).all()
 
         for transaction in transactions_to_update:
             transaction.status = "completed"
 
         session.commit()
+
+t = Transaction()
+print(t.check_funds_and_fraud("4147202464191053", 200000))

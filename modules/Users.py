@@ -18,7 +18,7 @@ class Users(Base):
     role = Column(String)
 
 
-    transactions = relationship('Transaction', back_populates='user')
-    credit_cards = relationship('CreditCards', back_populates='user')
-    debit_cards = relationship('DebitCards', back_populates='user')
+    # transactions = relationship('Transaction', back_populates='user')
+    # credit_cards = relationship('CreditCards', back_populates='user')
+    # debit_cards = relationship('DebitCards', back_populates='user')
 
