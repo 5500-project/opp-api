@@ -4,6 +4,7 @@ from sqlalchemy.orm import sessionmaker
 from db.database import Base, SessionLocal
 from modules.Users import Users
 from sqlalchemy.orm.session import close_all_sessions
+import bcrypt
 
 # Create a test-specific database engine and session
 TEST_DATABASE_URL = "sqlite:///./test.db"
@@ -56,3 +57,15 @@ def test_create_user(override_get_db):
     assert retrieved_user.password_hash == user_data["password_hash"]
     assert retrieved_user.is_active == user_data["is_active"]
     assert retrieved_user.role == user_data["role"]
+
+    password = "test_password"
+    wrong_password = "wrong_password"
+
+    user.set_password(password)
+
+    assert user.password_hash is not None
+    assert bcrypt.checkpw(password.encode('utf-8'), user.password_hash)
+
+    assert user.check_password(password)
+    assert not user.check_password(wrong_password)
+

@@ -1,4 +1,4 @@
-from .base import Base
+from db.database import Base
 from sqlalchemy import Column, Integer, String, Boolean
 from sqlalchemy.orm import relationship
 import bcrypt
@@ -18,9 +18,9 @@ class User(Base):
     role = Column(String)
 
 
-    transactions = relationship('Transaction', back_populates='user')
-    credit_cards = relationship('CreditCard', back_populates='user')
-    debit_cards = relationship('DebitCard', back_populates='user')
+    # transactions = relationship('Transaction', back_populates='user')
+    # credit_cards = relationship('CreditCard', back_populates='user')
+    # debit_cards = relationship('DebitCard', back_populates='user')
 
     def set_password(self, password):
         self.password_hash = bcrypt.hashpw(password.encode('utf-8'), bcrypt.gensalt())

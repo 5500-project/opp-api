@@ -2,6 +2,7 @@ from db.database import Base
 from sqlalchemy import Column, Integer, String, Boolean
 from sqlalchemy.orm import relationship
 import bcrypt
+from modules.Transaction import Transaction, PaymentMethod
 
 
 class Users(Base):
@@ -18,8 +19,12 @@ class Users(Base):
     role = Column(String)
     
 
-
     # transactions = relationship('Transaction', back_populates='user')
     # credit_cards = relationship('CreditCards', back_populates='user')
     # debit_cards = relationship('DebitCards', back_populates='user')
 
+    def set_password(self, password):
+        self.password_hash = bcrypt.hashpw(password.encode('utf-8'), bcrypt.gensalt())
+
+    def check_password(self, password):
+        return bcrypt.checkpw(password.encode('utf-8'), self.password_hash)
