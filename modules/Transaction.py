@@ -34,16 +34,32 @@ class Transaction(Base):
     # user = relationship('User', back_populates='transactions')
 
     @classmethod
-    def get_pending_transactions(cls, session):
+    def get_pending_transactions(cls, session, userId):
         # Update credit card transactions status before fetching pending transactions
-        cls.update_credit_card_transactions(session)
-        return session.query(cls).filter_by(status='pending').all()
+        cls.update_credit_card_transactions(session, userId)
+        return session.query(cls).filter_by(userId=userId, status='pending').all()
 
     @classmethod
-    def get_transactions_comprising_total_balance(cls, session):
+    def get_transactions_comprising_total_balance(cls, session, userId):
         # This method assumes that only 'completed' transactions contribute to the total balance.
-        cls.update_credit_card_transactions(session)
-        return session.query(cls).filter_by(status='completed').all()
+        cls.update_credit_card_transactions(session,userId)
+        return session.query(cls).filter_by(userId=userId, status='completed').all()
+
+    @classmethod
+    def calculate_total_balance_for_period(cls, session, start_date: datetime, end_date: datetime, userId):
+        if start_date > end_date:
+            raise ValueError("Start date must be before end date")
+
+        transactions = session.query(cls).filter(
+            cls.user_id == userId,
+            cls.status == TransactionStatus.completed,
+            cls.transaction_date >= start_date,
+            cls.transaction_date <= end_date
+        ).all()
+
+        total_balance = sum(transaction.amount for transaction in transactions)
+
+        return total_balance
 
     @classmethod
     def validate_card(cls, card_number):
@@ -100,9 +116,10 @@ class Transaction(Base):
         return {"success": True, "msg": "Transaction initiated successfully."}
 
     @classmethod
-    def update_credit_card_transactions(cls, session):
+    def update_credit_card_transactions(cls, session, userId):
         two_days_ago = datetime.utcnow() - timedelta(days=2)
         transactions_to_update = session.query(cls).filter(
+            cls.user_id == userId,
             cls.payment_method == "credit", # PaymentMethod.credit,
             cls.status == "pending",
             cls.transaction_date <= datetime.utcnow() # two_days_ago
