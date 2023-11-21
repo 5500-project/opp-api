@@ -61,8 +61,18 @@ async def read_all(user: user_dependency, db: db_dependency):
     check_user_auth(user)
     return db.query(Transaction).all()
 
+@router.get("/all_pendings", status_code=status.HTTP_200_OK)
+async def read_all(user: user_dependency, db: db_dependency):
+    check_user_auth(user)
+    return db.query(Transaction).filter_by(user_id=user.id).filter_by(status='pending').all()
+
+@router.get("/all_processed", status_code=status.HTTP_200_OK)
+async def read_all(user: user_dependency, db: db_dependency):
+    check_user_auth(user)
+    return db.query(Transaction).filter_by(user_id=user.id).filter_by(status='completed').all()
+
 # Check whether user has right to access specific transactions
 def check_user_auth(user):
     # TODO: validate user
-    if user is None or user.role.lower() != 'bussinessowner':
+    if user is None or user.role.lower() != 'businessowner':
         raise HTTPException(status_code=401, detail='Authentication Failed')
