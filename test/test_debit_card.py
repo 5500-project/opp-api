@@ -2,7 +2,7 @@ import pytest
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 from db.database import Base, engine, SessionLocal
-from modules.debit_card import DebitCard
+from modules.DebitCards import DebitCards
 from sqlalchemy.orm.session import close_all_sessions
 from sqlalchemy.orm import relationship
 

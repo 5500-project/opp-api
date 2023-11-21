@@ -113,5 +113,5 @@ class Transaction(Base):
 
         session.commit()
 
-t = Transaction()
-print(t.check_funds_and_fraud("4147202464191053", 200000))
+# t = Transaction()
+# print(t.check_funds_and_fraud("4147202464191053", 200000))

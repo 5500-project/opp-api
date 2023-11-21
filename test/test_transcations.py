@@ -1,6 +1,6 @@
 import json
 from fastapi.testclient import TestClient
-from routers.transcations import router  
+from routers.transactions import router
 
 client = TestClient(router)
 
