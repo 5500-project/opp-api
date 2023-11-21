@@ -62,12 +62,12 @@ async def read_all(user: user_dependency, db: db_dependency):
     return db.query(Transaction).all()
 
 @router.get("/all_pendings", status_code=status.HTTP_200_OK)
-async def read_all(user: user_dependency, db: db_dependency):
+async def get_pending(user: user_dependency, db: db_dependency):
     check_user_auth(user)
     return db.query(Transaction).filter_by(user_id=user.id).filter_by(status='pending').all()
 
 @router.get("/all_processed", status_code=status.HTTP_200_OK)
-async def read_all(user: user_dependency, db: db_dependency):
+async def get_processed(user: user_dependency, db: db_dependency):
     check_user_auth(user)
     return db.query(Transaction).filter_by(user_id=user.id).filter_by(status='completed').all()
 
