@@ -37,13 +37,13 @@ class Transaction(Base):
     def get_pending_transactions(cls, session, userId):
         # Update credit card transactions status before fetching pending transactions
         cls.update_credit_card_transactions(session, userId)
-        return session.query(cls).filter_by(userId=userId, status='pending').all()
+        return session.query(cls).filter_by(user_id=userId, status='pending').all()
 
     @classmethod
     def get_transactions_comprising_total_balance(cls, session, userId):
         # This method assumes that only 'completed' transactions contribute to the total balance.
         cls.update_credit_card_transactions(session,userId)
-        return session.query(cls).filter_by(userId=userId, status='completed').all()
+        return session.query(cls).filter_by(user_id=userId, status='completed').all()
 
     @classmethod
     def calculate_total_balance_for_period(cls, session, start_date: datetime, end_date: datetime, userId):

@@ -35,10 +35,15 @@ class Token(BaseModel):
     access_token: str
     token_type: str
 
-@router.get("/", status_code=status.HTTP_200_OK)
+@router.get("/get_completed", status_code=status.HTTP_200_OK)
 async def get_completed_transaction(user: user_dependency, db: db_dependency):
     check_user_auth(user)
     return Transaction.get_transactions_comprising_total_balance(db, user.id)
+
+@router.get("/get_pending", status_code=status.HTTP_200_OK)
+async def get_pending(user: user_dependency, db: db_dependency):
+    check_user_auth(user)
+    return Transaction.get_pending_transactions(db, user.id)
 
 @router.get("/total_balance_time_period")
 async def get_total_balance_time_period(user: user_dependency, db: db_dependency, start_date: date, end_date:date):
@@ -75,18 +80,8 @@ async def read_all(user: user_dependency, db: db_dependency):
     check_user_auth(user)
     return db.query(Transaction).all()
 
-@router.get("/all_pendings", status_code=status.HTTP_200_OK)
-async def get_pending(user: user_dependency, db: db_dependency):
-    check_user_auth(user)
-    return db.query(Transaction).filter_by(user_id=user.id).filter_by(status='pending').all()
-
-@router.get("/all_processed", status_code=status.HTTP_200_OK)
-async def get_processed(user: user_dependency, db: db_dependency):
-    check_user_auth(user)
-    return db.query(Transaction).filter_by(user_id=user.id).filter_by(status='completed').all()
 
 # Check whether user has right to access specific transactions
 def check_user_auth(user):
-    # TODO: validate user
     if user is None or user.role.lower() != 'businessowner':
         raise HTTPException(status_code=401, detail='Authentication Failed')
