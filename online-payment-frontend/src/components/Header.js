@@ -21,7 +21,7 @@
 // const Header = ({ username }) => {
 //   return (
 //     <div className="header">
-//       {/* Your other header content */}
+//       {/* other header content */}
 //       {username ? (
 //         <>
 //           <p>Welcome, {username}!</p>
@@ -52,7 +52,7 @@ const Header = ({ username, onLogout }) => {
     // Redirect to the main page after logout
     navigate("/");
   };
-  // Inside your login or signup component
+  // Inside login or signup component
   const handleLogin = () => {
     // logic here
     const username = "John"; // Replace this with the actual username
@@ -63,7 +63,7 @@ const Header = ({ username, onLogout }) => {
 
   return (
     <div className="header">
-      {/* Your other header content */}
+      {/* other header content */}
       {username ? (
         <>
           <p>Welcome, {username}!</p>

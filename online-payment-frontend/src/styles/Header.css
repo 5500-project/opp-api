@@ -24,7 +24,6 @@
   cursor: pointer;
 }
 
-/* Add this style to adjust the appearance of the buttons if needed */
 .header-buttons button:hover {
   background-color: #ddd;
 }
