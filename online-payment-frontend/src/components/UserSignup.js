@@ -138,7 +138,7 @@ const UserSignup = () => {
       // Make an API call to save user information to the backend
       const response = await axios.post("http://backend-url/auth/", newUser);
 
-      // Handle successful signup (you may want to check the response status)
+      // Handle successful signup (check the response status)
       if (response.status === 201) {
         // Redirect to the login page after successful signup
         navigate("/login");

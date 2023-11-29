@@ -95,7 +95,7 @@ const UserLogin = () => {
     }
 
     try {
-      navigate("/", { state: { username } });
+      // navigate("/", { state: { username } });
       // Send a request to the backend to obtain the access token
       const response = await axios.post("http://backend-url/auth/token/", {
         username,
