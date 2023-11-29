@@ -285,8 +285,8 @@ function PaymentMain() {
       card_number: userData.card_number,
     };
 
-    if (!userData.amount || !userData.card_number) {
-      setError("Please enter amount, user name and card number!");
+    if (!userData.amount || !userData.card_number || !userData.user_id) {
+      setError("Please enter amount, userID and card number!");
       return;
     }
     try {
