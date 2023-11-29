@@ -71,8 +71,10 @@ const Header = ({ username, onLogout }) => {
         </>
       ) : (
         <>
-          <Link to="/login">Login</Link>
-          <Link to="/signup">Signup</Link>
+          <div className="auth-links">
+            <Link to="/login">Login</Link>
+            <Link to="/signup">Signup</Link>
+          </div>
         </>
       )}
     </div>

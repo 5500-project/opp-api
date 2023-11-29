@@ -1,29 +1,46 @@
-/* styles/Header.css */
+/* Update your existing Header styles or add these styles to your CSS file */
 .header {
-  background-color: #333;
-  padding: 10px;
+  padding: 15px;
+
+  color: #ffffff;
   display: flex;
-  justify-content: space-between; /* Align items to the start and end */
-  align-items: center; /* Center items vertically */
+  justify-content: space-between;
+  align-items: center;
 }
 
-.header h1 {
-  color: #fff;
+.header p {
+  font-size: 16px;
 }
 
-.header-buttons {
-  display: flex;
-  gap: 10px;
-}
-
-.header-buttons button {
-  background-color: #fff;
-  color: #333;
-  padding: 8px 12px;
+.header button,
+.header a {
+  background-color: transparent;
   border: none;
+  color: #ffffff;
+  font-size: 16px;
   cursor: pointer;
+  text-decoration: none;
+  transition: color 0.3s ease;
 }
 
-.header-buttons button:hover {
-  background-color: #ddd;
+.header button:hover,
+.header a:hover {
+  color: antiquewhite; /* Change color on hover */
+}
+
+.auth-links {
+  display: flex;
+  align-items: center;
+  margin-left: auto; /* Add this line to move auth-links to the right */
+}
+
+.auth-links a {
+  color: #ffffff;
+  text-decoration: none;
+  margin-left: 20px;
+  transition: color 0.3s ease;
+}
+
+.auth-links a:hover {
+  color: gold; /* Change color on hover */
 }
