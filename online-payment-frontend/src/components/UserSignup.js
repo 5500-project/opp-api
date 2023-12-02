@@ -116,6 +116,11 @@ const UserSignup = () => {
   const navigate = useNavigate();
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
+  const [email, setEmail] = useState("");
+  const [firstName, setFirstName] = useState("");
+  const [lastName, setLastName] = useState("");
+  const [phoneNumber, setPhoneNumber] = useState("");
+  const [role, setRole] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [error, setError] = useState("");
 
@@ -123,8 +128,8 @@ const UserSignup = () => {
     event.preventDefault();
 
     // Validate the form inputs
-    if (!username || !password || password !== confirmPassword) {
-      setError("Please enter valid username and matching passwords.");
+    if (!username || !password || password !== confirmPassword || !email) {
+      setError("Please enter valid username, email and matching passwords.");
       return;
     }
 
@@ -133,22 +138,45 @@ const UserSignup = () => {
       const newUser = {
         username: event.target.elements.username.value,
         password: event.target.elements.password.value,
+        email: event.target.elements.email.value,
+        first_name: event.target.elements.firstName,
+        last_name: event.target.elements.lastName,
+        phone_number: event.target.elements.phoneNumber,
+        role: event.target.elements.role
       };
 
-      // Make an API call to save user information to the backend
-      const response = await axios.post("http://backend-url/auth/", newUser);
+      const testUser = {
+        "email": "example@example.com",
+        "username": "example_username",
+        "first_name": "John",
+        "last_name": "Doe",
+        "phone_number": "1234567890",
+        "password": "example_password",
+        "role": "user"
+      };
+      const headers = {
+        "accept": "application/json",
+        "Content-Type": "application/json"
+      };
 
-      // Handle successful signup (check the response status)
+      const backendURL = 'http://18.216.139.10:8000/auth/';
+      const response = await axios.post(backendURL, testUser, { headers });
+    
       if (response.status === 201) {
-        // Redirect to the login page after successful signup
         navigate("/login");
+      } else if (response.status === 400) {
+        setError("Username or email already registered. Please choose a different one.");
+      } else if (response.status === 422) {
+        setError("Validation error. Please check your input.");
       } else {
-        // Handle signup failure (e.g., display an error message)
-        setError("Signup failed. Please try again.");
+        console.error("Unexpected error during signup:", response);
+        setError("Unexpected error during signup. Please try again later.");
       }
+
     } catch (error) {
+
       console.error("Error during signup:", error);
-      setError("Error during signup. Please try again later.");
+      setError(`Error during signup: ${error.message}`);
     }
   };
 
@@ -184,6 +212,48 @@ const UserSignup = () => {
             onChange={(e) => setConfirmPassword(e.target.value)}
           />
 
+          <label htmlFor="email">Email:</label>
+          <input
+            type="text"
+            id="email"
+            name="email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+          />
+
+          <label htmlFor="firstName">First Name:</label>
+          <input
+            type="text"
+            id="firstName"
+            name="firstName"
+            value={firstName}
+            onChange={(e) => setFirstName(e.target.value)}
+          />
+          <label htmlFor="lastName">Last Name:</label>
+          <input
+            type="text"
+            id="lastName"
+            name="lastName"
+            value={lastName}
+            onChange={(e) => setLastName(e.target.value)}
+          />
+          <label htmlFor="phoneNumber">Phone Number:</label>
+          <input
+            type="text"
+            id="phoneNumber"
+            name="phoneNumber"
+            value={phoneNumber}
+            onChange={(e) => setPhoneNumber(e.target.value)}
+          />
+
+          <label htmlFor="role">Role:</label>
+          <input
+            type="text"
+            id="role"
+            name="role"
+            value={role}
+            onChange={(e) => setRole(e.target.value)}
+          />
           {error && <p className="error-message">{error}</p>}
 
           <button type="submit">Signup</button>

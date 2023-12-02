@@ -95,22 +95,26 @@ const UserLogin = () => {
     }
 
     try {
-      // navigate("/", { state: { username } });
+      navigate("/", { state: { username } });
       // Send a request to the backend to obtain the access token
-      const response = await axios.post("http://backend-url/auth/token/", {
-        username,
-        password,
+      const response = await axios.post("http://18.216.139.10:8000/auth/token/", {
+        grant_type: "password",
+        username: username,
+        password: password,
+        scope: "",
+        client_id: "",
+        client_secret: "",
       });
-
+    
       const accessToken = response.data.access_token;
-
+    
       // Save the access token in local storage or a cookie for future requests
       localStorage.setItem("accessToken", accessToken);
-
+    
       // Redirect to the main page after successful login
       navigate("/", { state: { username } });
     } catch (error) {
-      setError("Login failed. Please check your credentials.");
+      setError(`Login failed. ${error.message}. Please check your credentials.`);
     }
   };
 

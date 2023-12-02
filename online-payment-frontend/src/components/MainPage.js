@@ -24,7 +24,7 @@ function MainPage() {
       navigate("/login");
     } else {
       // If logged in, navigate to the respective service webpage
-      navigate(serviceLink);
+      navigate(serviceLink, { state: { username } });
     }
   };
   const handleNavigationClick = (path) => {
@@ -35,7 +35,7 @@ function MainPage() {
       navigate("/login");
     } else {
       // If logged in, navigate to the specified path
-      navigate(path);
+      navigate(path, { state: { username } });
     }
   };
 
@@ -62,7 +62,7 @@ function MainPage() {
                 </span>
               </li>
               <li>
-                <span onClick={() => handleNavigationClick("/payment")}>
+                <span onClick={() => handleNavigationClick("/history")}>
                   Payment History
                 </span>
               </li>
@@ -124,7 +124,7 @@ function MainPage() {
 
             <div
               className="main-service-box"
-              onClick={() => handleServiceClick("/account")}
+              onClick={() => handleServiceClick("/payment")}
             >
               <h2>Transaction</h2>
               <p>Make a transaction now!</p>
@@ -132,7 +132,7 @@ function MainPage() {
 
             <div
               className="main-service-box"
-              onClick={() => handleServiceClick("/account")}
+              onClick={() => handleServiceClick("/history")}
             >
               <h2>Payment History</h2>
               <p>Find your payment history.</p>

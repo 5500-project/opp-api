@@ -3,7 +3,9 @@ import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 import MainPage from "./components/MainPage";
 import UserLogin from "./components/UserLogin";
 import UserSignUp from "./components/UserSignup";
+import AccountPage from "./components/Account";
 import PaymentMain from "./payment/PaymentMain";
+import PaymentHistory from "./payment/PaymentHistory";
 import PaymentVerification from "./payment/PaymentProcess";
 
 function App() {
@@ -21,6 +23,11 @@ function App() {
             path="/payment-verification"
             element={<PaymentVerification />}
           />
+          <Route
+            path="/history"
+            element={<PaymentHistory />}
+          />
+          <Route path="/account" element={<AccountPage />} />
         </Routes>
       </div>
     </Router>

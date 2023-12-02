@@ -261,7 +261,6 @@ function PaymentMain() {
 
   const [userData, setUserData] = useState({
     user_id: "",
-    username: "",
     paymentMethod: "Debit",
     card_number: "",
     amount: "",
@@ -276,6 +275,26 @@ function PaymentMain() {
       ...prevUserData,
       [name]: value,
     }));
+  };
+
+  const handleNavigationClick = (path) => {
+    // Check if the user is logged in
+    if (!username) {
+      // If not logged in, redirect to the login page
+      navigate("/login");
+    } else {
+      // If logged in, navigate to the specified path
+      if (path === "/home") {
+        // If the path is "/home", navigate to the main page with the username
+        navigate("/", { state: { username } });
+      } else if (path === "/account") {
+        // Otherwise, navigate to the specified path
+        navigate("/account", { state: { username } });
+      }else if (path === "/history") {
+        // Otherwise, navigate to the specified path
+        navigate("/history", { state: { username } });
+      }
+    }
   };
 
   const handleNextButtonClick = async () => {
@@ -362,13 +381,25 @@ function PaymentMain() {
         <nav>
           <ul>
             {/* Navigation links */}
-            <li>Home</li>
-            <li>My Account</li>
+            <li>
+              <span onClick={() => handleNavigationClick("/home")}>Home</span>
+            </li>
+            <li>
+              <span onClick={() => handleNavigationClick("/account")}>
+                My Account
+              </span>
+            </li>
+            <li>
+                <span onClick={() => handleNavigationClick("/history")}>
+                  Payment History
+                </span>
+              </li>
             <li onClick={handleLogout}>Logout</li>
             {/* ... */}
           </ul>
         </nav>
       </header>
+      <p>Welcome {username}, here is the form to send money.</p>
       <div className="payment-container">
         <div className="left-part">
           <h2>Send Money</h2>
