@@ -103,7 +103,7 @@ function AccountPage() {
 
       <div className="right-side">
         <h4><b>Financial Report:</b> This is your latest financial report!</h4>
-        {/* Add more financial report details as needed */}
+        {/*financial report details */}
         <div className="finance-report">
             <h2>Payment Status</h2>
             <div className="status">

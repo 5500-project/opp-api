@@ -29,7 +29,7 @@ function PaymentHistory(){
 
         setTransactionHistory(transactionHistories);
         // Fetch transaction history data from the backend
-        const backEndURL = `http://your-backend-api/history?username=${username}&page=${page}`
+        const backEndURL = `http://backend-api/history?username=${username}&page=${page}`
         const fetchData = async () => {
           try {
             const response = await axios.get(backEndURL);
