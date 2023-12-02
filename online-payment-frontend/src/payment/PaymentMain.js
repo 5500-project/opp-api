@@ -366,7 +366,7 @@ function PaymentMain() {
   };
 
   const handleLogout = () => {
-    // Add logout logic here (e.g., clearing user credentials)
+    // logout logic here
     // ...
 
     // Redirect to the main page after logout

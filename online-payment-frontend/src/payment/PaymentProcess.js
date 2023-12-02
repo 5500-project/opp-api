@@ -21,7 +21,7 @@ const PaymentVerification = () => {
         setVerificationStatus(
           "Verification successful! Transaction completed."
         );
-        // You may want to send the userData to the backend at this point
+        // send the userData to the backend .........
       } else {
         // Verification failed
         setVerificationStatus("Verification failed. Please try again.");
@@ -30,7 +30,7 @@ const PaymentVerification = () => {
   }, [userData, verificationCode]);
 
   const handleFinishTransaction = () => {
-    // You may want to add additional logic before finishing the transaction
+    // logic before finishing the transaction
     alert("Transaction finished!");
     navigate("/"); // Redirect to the main page after finishing the transaction
   };

@@ -11,9 +11,7 @@ function MainPage() {
   const navigate = useNavigate();
 
   const handleLogout = () => {
-    // Add logout logic here (e.g., clearing user credentials)
-    // ...
-
+    // logout logic here 
     // Redirect to the main page after logout
     navigate("/");
   };
@@ -75,7 +73,7 @@ function MainPage() {
             </ul>
           </nav>
         </section>
-        {/* ... rest of your MainPage component */}
+
         <section className="introduction">
           {/* Introduction boxes */}
           <div className="intro-container">
