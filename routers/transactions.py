@@ -7,9 +7,11 @@ from starlette import status
 from sqlalchemy.orm import Session
 from pydantic import BaseModel
 from modules.Transaction import Transaction
+from modules.Users import Users
 from routers.auth import get_current_user
 from modules.Users import Users
 from db.database import SessionLocal
+
 from dotenv import load_dotenv
 
 
@@ -61,13 +63,16 @@ async def get_total_balance_time_period(user: user_dependency, db: db_dependency
 
 @router.post("/initiate")
 async def initiate_transaction(user: user_dependency, db: db_dependency, card_number: str, amount: float, payment_method):
+    # user = db.query(Users).filter_by(email=transferTo, role='businessowner').all()
+    # if not user:
+    #     raise HTTPException(status_code=401, detail='Email Not Found')
     check_user_auth(user)
     return Transaction.initiateTransaction(db, user.id, card_number, amount, payment_method)
 
 # @router.post("/initiate")
-# async def initiate_transaction(user: user_dependency, db: db_dependency, user_id: int, card_number: str, amount: float, payment_method: Enum):
+# async def initiate_transaction(user: user_dependency, db: db_dependency, card_number: str, amount: float, payment_method):
 #     check_user_auth(user)
-#     return Transaction.initiateTransaction(db, user_id, card_number, amount, payment_method)
+#     return Transaction.initiateTransaction(db, user.id, card_number, amount, payment_method)
 
 @router.post("/update_credit_transactions")
 async def update_credit_transactions(user: user_dependency, db: db_dependency):
@@ -77,8 +82,10 @@ async def update_credit_transactions(user: user_dependency, db: db_dependency):
 
 @router.get("/", status_code=status.HTTP_200_OK)
 async def read_all(user: user_dependency, db: db_dependency):
-    check_user_auth(user)
-    return db.query(Transaction).all()
+    # if user is None or user.role.lower() != 'admin':
+    #     raise HTTPException(status_code=401, detail='Authentication Failed')
+    return db.query(Transaction).filter_by(user_id=user.id).all()
+
 
 
 # Check whether user has right to access specific transactions

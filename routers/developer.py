@@ -22,7 +22,7 @@ db_dependency = Annotated[Session, Depends(get_db)]
 
 # when an API uses this, it will enforce authorization
 user_dependency = Annotated[dict, (Depends(get_current_user))]
-
+print(user_dependency)
 
 # get developers
 @router.get("/",status_code=status.HTTP_200_OK)
@@ -32,5 +32,5 @@ async def read_all(user: user_dependency, db: db_dependency):
 
 
 def check_developer_user_auth(user):
-    if user is None or user.role.lower() != 'developer':
+    if user is None or user.role.lower() != 'admin':
         raise HTTPException(status_code=401, detail='Authentication Failed')

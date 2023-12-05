@@ -1,12 +1,13 @@
-import requests
-from db.database import Base
-from sqlalchemy import (
-    Column, Integer, Float, String, DateTime, Enum, ForeignKey
-)
-from sqlalchemy.orm import relationship
-
 from datetime import datetime, timedelta
 from enum import Enum
+from fastapi import HTTPException
+
+import requests
+from sqlalchemy import (
+    Column, Integer, Float, String, DateTime, ForeignKey
+)
+
+from db.database import Base
 
 
 class TransactionStatus(Enum):
@@ -26,9 +27,9 @@ class Transaction(Base):
     user_id = Column(Integer, ForeignKey('users.id'))
     amount = Column(Float, nullable=False)
     transaction_date = Column(DateTime, default=datetime.utcnow)
-    #status = Column(Enum('pending', 'completed'), default='completed')
+    # status = Column(Enum('pending', 'completed'), default='completed')
     status = Column(String, default='completed')
-    #payment_method = Column(Enum(PaymentMethod))
+    # payment_method = Column(Enum(PaymentMethod))
     payment_method = Column(String)
 
     # user = relationship('User', back_populates='transactions')
@@ -42,7 +43,7 @@ class Transaction(Base):
     @classmethod
     def get_transactions_comprising_total_balance(cls, session, userId):
         # This method assumes that only 'completed' transactions contribute to the total balance.
-        cls.update_credit_card_transactions(session,userId)
+        cls.update_credit_card_transactions(session, userId)
         return session.query(cls).filter_by(user_id=userId, status='completed').all()
 
     @classmethod
@@ -84,20 +85,20 @@ class Transaction(Base):
         else:
             return {"error": f"Request failed with status code {response.status_code}"}
 
-
     @classmethod
     def initiateTransaction(cls, session, user_id, card_number, amount, payment_method):
         # Validate the card
         card_validation = cls.validate_card(card_number)
         if card_validation.get("success") == "false":
-            return {"error": card_validation.get("msg")}
+            raise HTTPException(status_code=502, detail='Invalid Card Number')
+            # return {"error": card_validation.get("msg")}
 
         # Check funds and potential fraud
         funds_check = cls.check_funds_and_fraud(card_number, amount)
-        print(funds_check)
-        if funds_check.get("success")=='false':
-            return {"error": funds_check.get("msg")}
-
+        # print(funds_check)
+        if funds_check.get("success") == 'false':
+            raise HTTPException(status_code=502, detail='Insufficient funds and/or fraudulent card')
+            #return {"error": funds_check.get("msg")}
 
         # initial_status = "completed" if payment_method == PaymentMethod.debit else "pending"
         initial_status = "completed" if payment_method == "debit" else "pending"
@@ -120,9 +121,9 @@ class Transaction(Base):
         two_days_ago = datetime.utcnow() - timedelta(days=2)
         transactions_to_update = session.query(cls).filter(
             cls.user_id == userId,
-            cls.payment_method == "credit", # PaymentMethod.credit,
+            cls.payment_method == "credit",  # PaymentMethod.credit,
             cls.status == "pending",
-            cls.transaction_date <= datetime.utcnow() # two_days_ago
+            cls.transaction_date <= two_days_ago#datetime.utcnow()  # two_days_ago
         ).all()
 
         for transaction in transactions_to_update:
