@@ -71,3 +71,7 @@ nav li {
   margin: 0 10px;
   cursor: pointer;
 }
+
+.more-ways-section p {
+  margin-bottom: 40px; 
+}

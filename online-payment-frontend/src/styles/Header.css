@@ -1,4 +1,4 @@
-/* Update your existing Header styles or add these styles to your CSS file */
+
 .header {
   padding: 15px;
 
@@ -25,13 +25,13 @@
 
 .header button:hover,
 .header a:hover {
-  color: antiquewhite; /* Change color on hover */
+  color: antiquewhite;
 }
 
 .auth-links {
   display: flex;
   align-items: center;
-  margin-left: auto; /* Add this line to move auth-links to the right */
+  margin-left: auto; 
 }
 
 .auth-links a {
@@ -42,5 +42,5 @@
 }
 
 .auth-links a:hover {
-  color: gold; /* Change color on hover */
+  color: gold;
 }

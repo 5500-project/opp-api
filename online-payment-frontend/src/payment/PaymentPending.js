@@ -3,7 +3,7 @@ import { useLocation, useNavigate } from "react-router-dom";
 import axios from "axios";
 import "../styles/PaymentHistory.css";
 
-function PaymentHistory(){
+function PaymentPending(){
     const location = useLocation();
     const username = location.state?.username;
     const accessToken = location.state?.accessToken;
@@ -22,6 +22,15 @@ function PaymentHistory(){
         // Redirect to the main page after logout
         navigate("/");
     };
+    const handleNavigationClick2 = () => {
+        navigate("/history", { state: { username, accessToken } });
+    };
+    const handleNavigationClick3 = () => {
+        navigate("/payment-pending", { state: { username, accessToken } });
+    };
+    const handleNavigationClick4 = () => {
+        navigate("/payment-finished", { state: { username, accessToken } });
+    };
 
     useEffect(() => {
 
@@ -29,7 +38,7 @@ function PaymentHistory(){
         // Fetch transaction history data from the backend
         const fetchData = async () => {
           try{
-            const apiUrl = 'http://18.216.139.10:8000/transaction/';
+            const apiUrl = 'http://18.216.139.10:8000/transaction/get_pending';
             const headers = {
                 'accept': 'application/json',
                 'Authorization': `Bearer ${accessToken}` // Use the token here
@@ -85,16 +94,13 @@ function PaymentHistory(){
     const handlePageChange = (newPage) => {
         setCurrentPage(newPage);
     };
+    const checkEmpty = () =>{
+        if(transactionHistory.length === 0){
+            alert("You do not have any pending transaction now.");
 
-    const handleNavigationClick2 = () => {
-      navigate("/history", { state: { username, accessToken } });
+            return;
     };
-    const handleNavigationClick3 = () => {
-      navigate("/payment-pending", { state: { username, accessToken } });
-    };
-    const handleNavigationClick4 = () => {
-      navigate("/payment-finished", { state: { username, accessToken } });
-    };
+    }
 
     //test case
     const transactionHistories = [
@@ -156,6 +162,7 @@ function PaymentHistory(){
           <h1>Logo</h1>
           <nav>
             <ul>
+              {/* Navigation links */}
               <li>
                 <span onClick={() => handleNavigationClick("/home")}>Home</span>
               </li>
@@ -175,8 +182,9 @@ function PaymentHistory(){
           </nav>
         </header>
 
+
         <div className="transaction-history-container">
-          <section className = "payment-buttons">
+        <section className = "payment-buttons">
             <button className="payment-button" onClick={handleNavigationClick2}>
               Show All Transaction History
             </button>
@@ -186,10 +194,32 @@ function PaymentHistory(){
             <button className="payment-button" onClick={handleNavigationClick4}>
               Show Finished Transactions
             </button>
-          </section>
+        </section>
+        {transactionHistory.length > 0 ? (
+            <>
+            {renderTransactionHistory()}
+            {/* Pagination */}
+            <div className="pagination">
+                <button onClick={() => handlePageChange(currentPage - 1)} disabled={currentPage === 1}>
+                Previous
+                </button>
+                <span>{currentPage}</span>
+                <button
+                onClick={() => handlePageChange(currentPage + 1)}
+                disabled={indexOfLastItem >= transactionHistory.length}
+                >
+                Next
+                </button>
+            </div>
+            </>
+        ) : (
+            <p>You do not have any pending transactions now.</p>
+        )}
+        </div>
+
+        {/* <div className="transaction-history-container">
         {renderTransactionHistory()}
 
-        {/* Pagination */}
         <div className="pagination">
           <button onClick={() => handlePageChange(currentPage - 1)} disabled={currentPage === 1}>
             Previous
@@ -202,10 +232,10 @@ function PaymentHistory(){
             Next
           </button>
         </div>
-      </div>
+      </div> */}
         </body>  
 
     );
 
 }
-export default PaymentHistory;
+export default PaymentPending;

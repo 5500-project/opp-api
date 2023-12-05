@@ -3,7 +3,7 @@ import { useLocation, useNavigate } from "react-router-dom";
 import axios from "axios";
 import "../styles/PaymentHistory.css";
 
-function PaymentHistory(){
+function PaymentFinished(){
     const location = useLocation();
     const username = location.state?.username;
     const accessToken = location.state?.accessToken;
@@ -29,7 +29,7 @@ function PaymentHistory(){
         // Fetch transaction history data from the backend
         const fetchData = async () => {
           try{
-            const apiUrl = 'http://18.216.139.10:8000/transaction/';
+            const apiUrl = 'http://18.216.139.10:8000/transaction/get_completed';
             const headers = {
                 'accept': 'application/json',
                 'Authorization': `Bearer ${accessToken}` // Use the token here
@@ -71,7 +71,6 @@ function PaymentHistory(){
     const renderTransactionHistory = () => {
         return currentItems.map((transaction) => (
         <div key={transaction.id}>
-            {/* Render individual transaction history item */}
             <p>Transaction ID: {transaction.id}</p>
             <p>Status: {transaction.status}</p>
             <p>User ID: {transaction.user_id}</p>
@@ -87,16 +86,16 @@ function PaymentHistory(){
     };
 
     const handleNavigationClick2 = () => {
-      navigate("/history", { state: { username, accessToken } });
-    };
+        navigate("/history", { state: { username, accessToken } });
+      };
     const handleNavigationClick3 = () => {
-      navigate("/payment-pending", { state: { username, accessToken } });
+        navigate("/payment-pending", { state: { username, accessToken } });
     };
     const handleNavigationClick4 = () => {
-      navigate("/payment-finished", { state: { username, accessToken } });
+        navigate("/payment-finished", { state: { username, accessToken } });
     };
 
-    //test case
+
     const transactionHistories = [
         {
           status: "completed",
@@ -153,9 +152,11 @@ function PaymentHistory(){
     return(
         <body>
         <header className="header">
+          {/* Header content, including logo, user profile, and navigation links and logout logo*/}
           <h1>Logo</h1>
           <nav>
             <ul>
+              {/* Navigation links */}
               <li>
                 <span onClick={() => handleNavigationClick("/home")}>Home</span>
               </li>
@@ -171,12 +172,13 @@ function PaymentHistory(){
               </li>
   
               <li onClick={handleLogout}>Logout</li>
+              {/* ... */}
             </ul>
           </nav>
         </header>
 
         <div className="transaction-history-container">
-          <section className = "payment-buttons">
+        <section className = "payment-buttons">
             <button className="payment-button" onClick={handleNavigationClick2}>
               Show All Transaction History
             </button>
@@ -186,7 +188,7 @@ function PaymentHistory(){
             <button className="payment-button" onClick={handleNavigationClick4}>
               Show Finished Transactions
             </button>
-          </section>
+        </section>
         {renderTransactionHistory()}
 
         {/* Pagination */}
@@ -208,4 +210,4 @@ function PaymentHistory(){
     );
 
 }
-export default PaymentHistory;
+export default PaymentFinished;

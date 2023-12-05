@@ -3,10 +3,14 @@ import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 import MainPage from "./components/MainPage";
 import UserLogin from "./components/UserLogin";
 import UserSignUp from "./components/UserSignup";
+import ChangePassword from "./components/ChangePassword";
 import AccountPage from "./components/Account";
+import FeaturePage from "./components/FeaturePage";
 import PaymentMain from "./payment/PaymentMain";
 import PaymentHistory from "./payment/PaymentHistory";
-import PaymentVerification from "./payment/PaymentProcess";
+import PaymentPending from "./payment/PaymentPending";
+import PaymentFinished from "./payment/PaymentFinished";
+import PaymentProcess from "./payment/PaymentProcess";
 
 function App() {
   return (
@@ -19,15 +23,22 @@ function App() {
           <Route path="/login" element={<UserLogin />} />
           <Route path="/signup" element={<UserSignUp />} />
           <Route path="/payment" element={<PaymentMain />} />
+          <Route path="/payment-pending" element={<PaymentPending />} />
+          <Route path="/payment-finished" element={<PaymentFinished />} />
           <Route
-            path="/payment-verification"
-            element={<PaymentVerification />}
+            path="/payment-process"
+            element={<PaymentProcess />}
           />
           <Route
             path="/history"
             element={<PaymentHistory />}
           />
+          <Route
+            path="/features"
+            element={<FeaturePage />}
+          />
           <Route path="/account" element={<AccountPage />} />
+          <Route path="/change-password" element={<ChangePassword />} />
         </Routes>
       </div>
     </Router>

@@ -2,53 +2,43 @@ import React, { useState, useEffect } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import "../styles/PaymentVerification.css";
 
-const PaymentVerification = () => {
+const PaymentProcess = () => {
   const navigate = useNavigate();
-  const { state } = useLocation();
-  const userData = state?.userData;
+  const location = useLocation();
+  // Extracting data from location.state or providing defaults
+  const username = location.state?.username || "DefaultUsername";
+  const accessToken = location.state?.accessToken || "DefaultAccessToken";
+  const userDataToSend = location.state?.userDataToSend;
 
+  
   const [verificationCode, setVerificationCode] = useState("");
   const [verificationStatus, setVerificationStatus] = useState("");
-
-  useEffect(() => {
-    // Simulate a backend verification process
-    if (userData) {
-      // Assuming a correct verification code for the sake of the example
-      const correctVerificationCode = "123456";
-
-      if (verificationCode === correctVerificationCode) {
-        // Verification successful
-        setVerificationStatus(
-          "Verification successful! Transaction completed."
-        );
-        // send the userData to the backend .........
-      } else {
-        // Verification failed
-        setVerificationStatus("Verification failed. Please try again.");
-      }
-    }
-  }, [userData, verificationCode]);
-
   const handleFinishTransaction = () => {
     // logic before finishing the transaction
     alert("Transaction finished!");
-    navigate("/"); // Redirect to the main page after finishing the transaction
+    navigate("/account", { state: { username, accessToken } }); // Redirect to the main page after finishing the transaction
   };
 
   return (
     <div className="verification-container">
-      <h2>Payment Verification</h2>
-      <p>Please enter the verification code sent to your mobile.</p>
-      <input
-        type="text"
-        placeholder="Verification Code"
-        value={verificationCode}
-        onChange={(e) => setVerificationCode(e.target.value)}
-      />
-      <button onClick={handleFinishTransaction}>Finish Transaction</button>
+      <h2>Payment Confirmation</h2>
+      <p>Hi {username}. Here is your payment details.</p>
+      <div className="finance-report">
+            <h2>Payment Status</h2>
+            <div className="card_number">
+                <strong>Card number:</strong> {userDataToSend.card_number}
+            </div>
+            <div className="amount">
+                <strong>Amount:</strong> ${userDataToSend.amount}
+            </div>
+            <div className="payment-method">
+                <strong>Payment Method:</strong> {userDataToSend.paymentMethod}
+            </div>
+        </div>
+      <button onClick={handleFinishTransaction}>Finish</button>
       <p className="verification-status">{verificationStatus}</p>
     </div>
   );
 };
 
-export default PaymentVerification;
+export default PaymentProcess;

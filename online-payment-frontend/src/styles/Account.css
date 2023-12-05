@@ -1,6 +1,6 @@
 body {
     margin: 0;
-    font-family: Arial, sans-serif;
+    font-family:Verdana, Geneva, Tahoma, sans-serif;
   }
   
   .header {
@@ -13,6 +13,7 @@ body {
   .user-profile-container {
     display: flex;
     padding: 20px;
+    font-family:Verdana, Geneva, Tahoma, sans-serif;
   }
   
   .left-corner {
@@ -133,3 +134,4 @@ body {
   .moreOptionsButton:hover {
     background-color: #0056b3; 
   }
+

@@ -1,82 +1,6 @@
-// // UserLogin.js
-// import React from "react";
-// import "../styles/UserLogin.css";
-
-// const UserLogin = () => {
-//   return (
-//     <div className="login-container">
-//       <div className="login-box">
-//         <h2>Login to Your Account</h2>
-//         <form>
-//           <label htmlFor="username">Username:</label>
-//           <input type="text" id="username" name="username" />
-
-//           <label htmlFor="password">Password:</label>
-//           <input type="password" id="password" name="password" />
-
-//           <button type="submit">Login</button>
-//         </form>
-
-//         <p className="forgot-password">Forgot your password?</p>
-//       </div>
-//     </div>
-//   );
-// };
-// // UserLogin.js
-// import React, { useState } from "react";
-// import { useNavigate } from "react-router-dom";
-// import "../styles/UserLogin.css";
-
-// const UserLogin = () => {
-//   const navigate = useNavigate();
-//   const [username, setUsername] = useState("");
-
-//   const handleSubmit = (event) => {
-//     event.preventDefault();
-
-//     //login logic...
-
-//     // Simulate login for demonstration purposes
-//     const enteredUsername = event.target.elements.username.value;
-//     // Perform actual login logic, set user credentials, etc.
-
-//     // Redirect to the main page after successful login
-//     navigate("/", { state: { username: enteredUsername } });
-//   };
-
-//   return (
-//     <div className="login-container">
-//       <div className="login-box">
-//         <h2>Login to Your Account</h2>
-//         <form onSubmit={handleSubmit}>
-//           <label htmlFor="username">Username:</label>
-//           <input
-//             type="text"
-//             id="username"
-//             name="username"
-//             value={username}
-//             onChange={(e) => setUsername(e.target.value)}
-//           />
-
-//           <label htmlFor="password">Password:</label>
-//           <input type="password" id="password" name="password" />
-
-//           <button type="submit">Login</button>
-//         </form>
-
-//         <p className="forgot-password">Forgot your password?</p>
-//         <a href="/signup" className="forgot-password">
-//           First time for our website? click here!
-//         </a>
-//       </div>
-//     </div>
-//   );
-// };
-
-// export default UserLogin;
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import axios from "axios"; // Make sure to install axios using: npm install axios
+import axios from "axios";
 import "../styles/UserLogin.css";
 
 const UserLogin = () => {
@@ -93,29 +17,42 @@ const UserLogin = () => {
       setError("Please enter both username and password.");
       return;
     }
+    const apiUrl = 'http://18.216.139.10:8000/auth/token/';
+    const requestData = {
+      username: event.target.elements.username.value,
+      password: event.target.elements.password.value
+    };
 
-    try {
-      navigate("/", { state: { username } });
-      // Send a request to the backend to obtain the access token
-      const response = await axios.post("http://18.216.139.10:8000/auth/token/", {
-        grant_type: "password",
-        username: username,
-        password: password,
-        scope: "",
-        client_id: "",
-        client_secret: "",
-      });
-    
+    // Convert data to URL-encoded format
+    const formData = new URLSearchParams();
+    for (const [key, value] of Object.entries(requestData)) {
+      formData.append(key, value);
+    }
+
+    // Make a POST request using Axios
+    axios.post(apiUrl, formData, {
+      headers: {
+          'Accept': 'application/json',
+          'Content-Type': 'application/x-www-form-urlencoded',
+      },
+    })
+    .then(response => {
+      console.log('Success:', response.data);
       const accessToken = response.data.access_token;
-    
+  
       // Save the access token in local storage or a cookie for future requests
       localStorage.setItem("accessToken", accessToken);
-    
-      // Redirect to the main page after successful login
-      navigate("/", { state: { username } });
-    } catch (error) {
-      setError(`Login failed. ${error.message}. Please check your credentials.`);
-    }
+      alert("Log in success, your will be directed to Home page.")
+      navigate("/", { state: { username, accessToken } });
+    })
+    .catch(error => {
+      console.error('Error:', error);
+      if(error.response.status == 401){
+        setError("Wrong password or username, please check again");
+      }else{
+        setError(`Please check error message ${error.message}`);
+      }
+    });
   };
 
   return (
@@ -146,7 +83,7 @@ const UserLogin = () => {
           <button type="submit">Login</button>
         </form>
 
-        <p className="forgot-password">Forgot your password?</p>
+        {/* <p className="forgot-password">Forgot your password?</p> */}
         <a href="/signup" className="forgot-password">
           First time for our website? Click here!
         </a>

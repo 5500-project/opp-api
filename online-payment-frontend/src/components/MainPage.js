@@ -1,4 +1,3 @@
-// MainPage.js
 import React from "react";
 import Header from "./Header";
 import "../styles/MainPage.css";
@@ -8,10 +7,10 @@ import { Link } from "react-router-dom";
 function MainPage() {
   const location = useLocation();
   const username = location.state?.username;
+  const accessToken = location.state?.accessToken;
   const navigate = useNavigate();
 
   const handleLogout = () => {
-    // logout logic here 
     // Redirect to the main page after logout
     navigate("/");
   };
@@ -22,20 +21,29 @@ function MainPage() {
       navigate("/login");
     } else {
       // If logged in, navigate to the respective service webpage
-      navigate(serviceLink, { state: { username } });
+      navigate(serviceLink, { state: { username, accessToken } });
     }
   };
   const handleNavigationClick = (path) => {
     // Check if the user is logged in
-
     if (!username) {
       // If not logged in, redirect to the login page
       navigate("/login");
     } else {
       // If logged in, navigate to the specified path
-      navigate(path, { state: { username } });
+      navigate(path, { state: { username, accessToken } });
     }
   };
+  const handleFeatureHelpHomeClick = (path) =>{
+    // Check if the user is logged in
+    if (!username) {
+      // If not logged in, redirect to the login page
+      navigate(path);
+    } else {
+      // If logged in, navigate to the specified path
+      navigate(path, { state: { username, accessToken } });
+    }
+  }
 
   return (
     <body>
@@ -65,11 +73,15 @@ function MainPage() {
                 </span>
               </li>
               <li>
-                <Link to="/help">Features</Link>
+                <span onClick={() => handleFeatureHelpHomeClick("/features")}>
+                  Features
+                </span>
               </li>
-              <li>
-                <Link to="/help">Help</Link>
-              </li>
+              {/* <li>
+                <span onClick={() => handleFeatureHelpHomeClick("/help")}>
+                  Help
+                </span>
+              </li> */}
             </ul>
           </nav>
         </section>
@@ -78,14 +90,16 @@ function MainPage() {
           {/* Introduction boxes */}
           <div className="intro-container">
             <div className="intro-box">
-              <h2 className="box-title">Left Introduction Box</h2>
+              <h2 className="box-title">Quick Transaction Initiation</h2>
               <p className="box-content">
-                This is the content of the left introduction box. This is the
-                content of the left introduction box. This is the content of the
-                left introduction box. This is the content of the left
-                introduction box. This is the content of the left introduction
-                box. This is the content of the left introduction box.
+              This feature allows users to quickly initiate a payment transaction. 
+              Users can enter the recipient's details, payment amount, and select the 
+              preferred payment method. The system will validate the transaction details,
+               process the payment, and provide immediate feedback to the user.
               </p>
+              {/* <button type="button" onClick={handleNavigationClick(("/payment"))}>
+              Try a transaction now!
+              </button> */}
               <figure className="box-figure"></figure>
             </div>
           </div>
@@ -94,16 +108,11 @@ function MainPage() {
           {/* Introduction boxes */}
           <div className="intro-container">
             <div className="intro-box">
-              <h2 className="box-title">Left Introduction Box</h2>
+              <h2 className="box-title">Financial Overview Dashboard</h2>
               <p className="box-content">
-                This is the content of the left introduction box. This is the
-                content of the left introduction box. This is the content of the
-                left introduction box. This is the content of the left
-                introduction box. This is the content of the left introduction
-                box. This is the content of the left introduction box. This is
-                the content of the left introduction box. This is the content of
-                the left introduction box. This is the content of the left
-                introduction box.
+              This feature provides users with a comprehensive dashboard displaying 
+              their financial overview. Users can view their current balance, recent transactions,
+               and access detailed financial reports for a specified date range.
               </p>
               <figure className="box-figure"></figure>
             </div>
@@ -136,7 +145,10 @@ function MainPage() {
               <p>Find your payment history.</p>
             </div>
 
-            <div className="main-service-box">
+            <div 
+            className="main-service-box"
+            onClick={() => handleFeatureHelpHomeClick("/features")}
+            >
               <h2>Features</h2>
               <p>Find all features.</p>
             </div>
