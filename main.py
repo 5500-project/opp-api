@@ -8,9 +8,9 @@ from routers import auth, developer, businessOwner, transactions
 app = FastAPI()
 
 origins = [
-    "http://76.146.71.122:3000",
-    "http://208.105.189.227:3000",
-    "http://localhost:3000"
+    "http://localhost:3000",
+    "http://127.0.0.1:3000",
+    "http://18.216.139.10:3000"
 ]
 
 app.add_middleware(

@@ -1,7 +1,5 @@
-from db.database import Base
 from sqlalchemy import Column, Integer, String, Boolean
-from sqlalchemy.orm import relationship
-import bcrypt
+from db.database import Base
 
 
 class Users(Base):
@@ -21,4 +19,3 @@ class Users(Base):
     # transactions = relationship('Transaction', back_populates='user')
     # credit_cards = relationship('CreditCards', back_populates='user')
     # debit_cards = relationship('DebitCards', back_populates='user')
-

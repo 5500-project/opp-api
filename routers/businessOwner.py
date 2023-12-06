@@ -10,6 +10,7 @@ from db.database import SessionLocal
 
 router = APIRouter(prefix='/businessowner', tags=['businessOwner'])
 
+
 def get_db():
     db = SessionLocal()
     try:

@@ -10,6 +10,7 @@ from db.database import SessionLocal
 
 router = APIRouter(prefix='/developer', tags=['developer'])
 
+
 def get_db():
     db = SessionLocal()
     try:
@@ -24,8 +25,9 @@ db_dependency = Annotated[Session, Depends(get_db)]
 user_dependency = Annotated[dict, (Depends(get_current_user))]
 print(user_dependency)
 
+
 # get developers
-@router.get("/",status_code=status.HTTP_200_OK)
+@router.get("/", status_code=status.HTTP_200_OK)
 async def read_all(user: user_dependency, db: db_dependency):
     check_developer_user_auth(user)
     return db.query(Users).all()

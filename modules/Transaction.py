@@ -67,23 +67,21 @@ class Transaction(Base):
         url = "https://c3jkkrjnzlvl5lxof74vldwug40pxsqo.lambda-url.us-west-2.on.aws"
         payload = {"card_number": card_number}
         headers = {'content-type': 'application/json'}
-        response = requests.post(url, json=payload, headers=headers)
+        response = requests.post(url, json=payload, headers=headers,timeout=10)
         if response.status_code == 200:
             return response.json()
-        else:
-            return {"error": f"Request failed with status code {response.status_code}"}
+        return {"error": f"Request failed with status code {response.status_code}"}
 
     @classmethod
     def check_funds_and_fraud(cls, card_number, amount):
         url = "https://223didiouo3hh4krxhm4n4gv7y0pfzxk.lambda-url.us-west-2.on.aws"
         payload = {"card_number": card_number, "amt": amount}
         headers = {'content-type': 'application/json'}
-        response = requests.post(url, json=payload, headers=headers)
+        response = requests.post(url, json=payload, headers=headers,timeout=10)
 
         if response.status_code == 200:
             return response.json()
-        else:
-            return {"error": f"Request failed with status code {response.status_code}"}
+        return {"error": f"Request failed with status code {response.status_code}"}
 
     @classmethod
     def initiateTransaction(cls, session, user_id, card_number, amount, payment_method):

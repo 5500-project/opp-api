@@ -1,5 +1,6 @@
+from sqlalchemy import Column, Integer
 from db.database import Base
-from sqlalchemy import Column, Integer, String, Boolean, ForeignKey, Float
+
 
 class CreditCards(Base):
     __tablename__ = 'creditcards'

@@ -1,21 +1,23 @@
+import os
 from datetime import timedelta, datetime
+from typing import Annotated, Any, Optional
+
+from dotenv import load_dotenv
 from fastapi import APIRouter, Depends, HTTPException
 from fastapi.security import OAuth2PasswordRequestForm, OAuth2PasswordBearer
-from pydantic import BaseModel, EmailStr
-from starlette import status
-from modules.Users import Users
-from passlib.context import CryptContext
-from db.database import SessionLocal
-from typing import Annotated, Any, Optional
-from sqlalchemy.orm import Session
 from jose import jwt, JWTError
-import os
-from dotenv import load_dotenv
+from passlib.context import CryptContext
+from pydantic import BaseModel
+from sqlalchemy.orm import Session
+from starlette import status
+
+from db.database import SessionLocal
+from modules.Users import Users
 
 load_dotenv()  # take environment variables from .env.
 
 # These are used to create the signature for a JWT
-SECRET_KEY = ""#os.getenv("SECRET_KEY")
+SECRET_KEY = ""  # os.getenv("SECRET_KEY")
 ALGORITHM = os.getenv("ALGORITHM")
 
 bcrypt_context = CryptContext(schemes=['bcrypt'], deprecated='auto')
@@ -44,9 +46,11 @@ class CreateUserRequest(BaseModel):
     password: str
     role: str
 
+
 class Token(BaseModel):
     access_token: str
     token_type: str
+
 
 @router.post("/", status_code=status.HTTP_201_CREATED)
 async def create_user(db: db_dependency, create_user_request: CreateUserRequest):
@@ -65,7 +69,7 @@ async def create_user(db: db_dependency, create_user_request: CreateUserRequest)
         username=create_user_request.username,
         first_name=create_user_request.first_name,
         last_name=create_user_request.last_name,
-        phone_number = create_user_request.phone_number,
+        phone_number=create_user_request.phone_number,
         role=create_user_request.role,
         password_hash=bcrypt_context.hash(create_user_request.password),
         is_active=True
@@ -74,7 +78,7 @@ async def create_user(db: db_dependency, create_user_request: CreateUserRequest)
     try:
         db.commit()
         return {"message": "User created successfully."}, status.HTTP_201_CREATED
-    except Exception as e:  # Consider logging the exception e
+    except Exception:  # Consider logging the exception e
         db.rollback()
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
@@ -141,7 +145,7 @@ async def deactivate_account(db: db_dependency, current_user: Users = Depends(ge
     try:
         db.commit()
         return {"message": "User account has been deactivated."}
-    except Exception as e:
+    except Exception:
         db.rollback()
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
@@ -161,7 +165,7 @@ async def change_password(
     try:
         db.commit()
         return {"message": "Password updated successfully."}
-    except Exception as e:
+    except Exception:
         db.rollback()
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
