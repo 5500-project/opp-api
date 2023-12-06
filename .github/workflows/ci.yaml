@@ -28,4 +28,7 @@ jobs:
     - name: Lint with pylint
       run: |
         # stop the build if there are Python syntax errors or undefined names
-        pylint models
+        pylint --rcfile=.pylintrc main.py
+        pylint --rcfile=.pylintrc ./routers/
+        pylint --rcfile=.pylintrc ./modules/
+        pylint --rcfile=.pylintrc ./db/
