@@ -1,4 +1,4 @@
-from datetime import date, datetime
+from datetime import datetime
 from typing import Annotated
 from fastapi import APIRouter, Depends, HTTPException
 from starlette import status
@@ -47,11 +47,12 @@ async def get_pending(user: user_dependency, db: db_dependency):
 @router.get("/total_balance_time_period")
 async def get_total_balance_time_period(user: user_dependency, db: db_dependency, start_date: str, end_date: str):
     check_user_auth(user)
-
     date_format = "%Y-%m-%d"
+    if not validate_date(start_date, date_format) or not validate_date(end_date, date_format):
+        raise HTTPException(status_code=422, detail="Invalid Date")
+
     start_date = datetime.strptime(start_date, date_format)
     end_date = datetime.strptime(end_date, date_format)
-
     start_datetime = datetime.combine(start_date, datetime.min.time())
     end_datetime = datetime.combine(end_date, datetime.max.time())
 
@@ -89,6 +90,14 @@ async def read_all(user: user_dependency, db: db_dependency):
     # if user is None or user.role.lower() != 'admin':
     #     raise HTTPException(status_code=401, detail='Authentication Failed')
     return db.query(Transaction).filter_by(user_id=user.id).all()
+
+
+def validate_date(date, date_format):
+    try:
+        datetime.strptime(date, date_format)
+        return True
+    except ValueError:
+        return False
 
 
 # Check whether user has right to access specific transactions
