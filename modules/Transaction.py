@@ -53,7 +53,7 @@ class Transaction(Base):
 
         transactions = session.query(cls).filter(
             cls.user_id == userId,
-            cls.status == TransactionStatus.completed,
+            cls.status == 'completed',
             cls.transaction_date >= start_date,
             cls.transaction_date <= end_date
         ).all()

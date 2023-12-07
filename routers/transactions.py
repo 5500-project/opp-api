@@ -45,8 +45,12 @@ async def get_pending(user: user_dependency, db: db_dependency):
 
 
 @router.get("/total_balance_time_period")
-async def get_total_balance_time_period(user: user_dependency, db: db_dependency, start_date: date, end_date: date):
+async def get_total_balance_time_period(user: user_dependency, db: db_dependency, start_date: str, end_date: str):
     check_user_auth(user)
+
+    date_format = "%Y-%m-%d"
+    start_date = datetime.strptime(start_date, date_format)
+    end_date = datetime.strptime(end_date, date_format)
 
     start_datetime = datetime.combine(start_date, datetime.min.time())
     end_datetime = datetime.combine(end_date, datetime.max.time())
