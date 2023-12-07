@@ -10,6 +10,12 @@ http://18.216.139.10:8000/docs
 
 http://18.216.139.10:3000
 
+## Demo Video
+
+You can watch the demo of the opp-app's features through this video.
+
+https://www.youtube.com/watch?v=PJw4FRv4OvY
+
 # Docker Command
 
 docker build -t opp_app .
