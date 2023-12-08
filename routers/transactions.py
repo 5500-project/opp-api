@@ -71,7 +71,13 @@ async def initiate_transaction(user: user_dependency, db: db_dependency, card_nu
     # if not user:
     #     raise HTTPException(status_code=401, detail='Email Not Found')
     check_user_auth(user)
-    return Transaction.initiateTransaction(db, user.id, card_number, amount, payment_method)
+    try:
+        float(amount)
+    except:
+        raise HTTPException(422,"Invalid amount")
+    if float(amount)<=0:
+        raise HTTPException(422, "Invalid amount")
+    return Transaction.initiateTransaction(db, user.id, card_number, float(amount), payment_method)
 
 
 # @router.post("/initiate")
