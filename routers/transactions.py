@@ -58,7 +58,8 @@ async def get_total_balance_time_period(user: user_dependency, db: db_dependency
 
     try:
         total_balance = Transaction.calculate_total_balance_for_period(db, start_datetime, end_datetime, user.id)
-        return {"total balance in this time period": total_balance}
+        #return {"total balance in this time period": total_balance}
+        return total_balance
     except ValueError as e:
         raise HTTPException(status_code=400, detail=str(e))
 
